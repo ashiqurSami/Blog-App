@@ -1,7 +1,8 @@
 import User from "../model/user.js";
 import { hashPassword } from "./../helper/auth_helper.js";
+import {error_handler} from "./../utils/error.js";
 
-export const signup = async (req, res) => {
+export const signup = async (req, res,next) => {
   const { username, email, password } = req.body;
   if (
     !username ||
@@ -11,7 +12,7 @@ export const signup = async (req, res) => {
     email == "" ||
     password == ""
   ) {
-    return res.status(400).json({ message: "All fields are required" });
+    return next(error_handler(400, "All fields are required"))
   }
 
   const hashedPassword = hashPassword(password);
@@ -24,7 +25,7 @@ export const signup = async (req, res) => {
   try {
     await newUser.save();
     res.json({ message: "sign up successfully" });
-  } catch (e) {
-    res.status(400).json({ message: e.toString() });
+  } catch (error) {
+    next(error)
   }
 };
