@@ -1,6 +1,8 @@
 import User from "../model/user.js";
 import { hashPassword } from "./../helper/auth_helper.js";
 import { error_handler } from "./../utils/error.js";
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -52,7 +54,7 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...rest } = validUser._doc;
     res
       .status(200)
-      .cokkie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, { httpOnly: true })
       .json(rest);
   } catch (e) {
     next(e);
